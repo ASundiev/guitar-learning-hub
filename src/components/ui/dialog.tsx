@@ -58,9 +58,10 @@ const DialogContent = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "relative bg-white rounded-lg shadow-lg p-6 mx-4",
+      "relative rounded-lg shadow-lg p-6 mx-4",
       className
     )}
+    style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)', border: '1px solid var(--border)' }}
     {...props}
   >
     {onClose && (

@@ -8,18 +8,18 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<'lessons' | 'repertoire'>('lessons');
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="mb-16">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-blue-100 border border-blue-200">
-                <Guitar className="h-8 w-8 text-blue-600" />
+              <div className="p-3 rounded-xl" style={{ backgroundColor: 'var(--primary)', opacity: 0.1, border: '1px solid var(--primary)' }}>
+                <Guitar className="h-8 w-8" style={{ color: 'var(--primary)' }} />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Guitar Learning Hub</h1>
-                <p className="text-gray-600 mt-1">
+                <h1 className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>Guitar Learning Hub</h1>
+                <p className="mt-1" style={{ color: 'var(--muted-foreground)' }}>
                   Track lessons and manage your repertoire
                 </p>
               </div>
@@ -29,21 +29,25 @@ export default function App() {
             <nav className="flex items-center gap-8">
               <button
                 onClick={() => setActiveSection('lessons')}
-                className={`text-sm transition-colors duration-200 hover:text-gray-900 ${
-                  activeSection === 'lessons' 
-                    ? 'text-gray-900 border-b-2 border-blue-600 pb-1' 
-                    : 'text-gray-600'
-                }`}
+                className="text-sm transition-colors duration-200 pb-1"
+                style={{
+                  color: activeSection === 'lessons' ? 'var(--foreground)' : 'var(--muted-foreground)',
+                  borderBottom: activeSection === 'lessons' ? '2px solid var(--primary)' : 'none'
+                }}
+                onMouseEnter={(e) => (e.target as HTMLButtonElement).style.color = 'var(--foreground)'}
+                onMouseLeave={(e) => (e.target as HTMLButtonElement).style.color = activeSection === 'lessons' ? 'var(--foreground)' : 'var(--muted-foreground)'}
               >
                 Lessons
               </button>
               <button
                 onClick={() => setActiveSection('repertoire')}
-                className={`text-sm transition-colors duration-200 hover:text-gray-900 ${
-                  activeSection === 'repertoire' 
-                    ? 'text-gray-900 border-b-2 border-blue-600 pb-1' 
-                    : 'text-gray-600'
-                }`}
+                className="text-sm transition-colors duration-200 pb-1"
+                style={{
+                  color: activeSection === 'repertoire' ? 'var(--foreground)' : 'var(--muted-foreground)',
+                  borderBottom: activeSection === 'repertoire' ? '2px solid var(--primary)' : 'none'
+                }}
+                onMouseEnter={(e) => (e.target as HTMLButtonElement).style.color = 'var(--foreground)'}
+                onMouseLeave={(e) => (e.target as HTMLButtonElement).style.color = activeSection === 'repertoire' ? 'var(--foreground)' : 'var(--muted-foreground)'}
               >
                 Repertoire
               </button>

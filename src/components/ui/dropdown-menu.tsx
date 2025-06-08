@@ -92,10 +92,11 @@ const DropdownMenuContent = React.forwardRef<
     <div
       ref={contentRef}
       className={cn(
-        "absolute z-50 mt-1 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 shadow-md",
+        "absolute z-50 mt-1 min-w-[8rem] overflow-hidden rounded-md border p-1 shadow-md",
         alignmentClasses[align],
         className
       )}
+      style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--card-foreground)' }}
       {...props}
     >
       {children}
@@ -111,10 +112,12 @@ const DropdownMenuItem = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       inset && "pl-8",
       className
     )}
+    onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--accent)'}
+    onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
     {...props}
   />
 ));

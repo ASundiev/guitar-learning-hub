@@ -51,9 +51,10 @@ const TabsList = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "inline-flex h-9 items-center justify-center rounded-lg bg-gray-100 p-1 text-gray-600",
+      "inline-flex h-9 items-center justify-center rounded-lg p-1",
       className
     )}
+    style={{ backgroundColor: 'var(--muted)', color: 'var(--muted-foreground)' }}
     {...props}
   />
 ));
@@ -76,12 +77,14 @@ const TabsTrigger = React.forwardRef<
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-        isActive
-          ? "bg-white text-gray-900 shadow"
-          : "text-gray-600 hover:text-gray-900",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
         className
       )}
+      style={{
+        backgroundColor: isActive ? 'var(--background)' : 'transparent',
+        color: isActive ? 'var(--foreground)' : 'var(--muted-foreground)',
+        boxShadow: isActive ? '0 1px 3px 0 rgba(0, 0, 0, 0.1)' : 'none'
+      }}
       onClick={() => onValueChange(triggerValue)}
       {...props}
     />

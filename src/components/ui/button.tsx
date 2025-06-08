@@ -12,13 +12,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", asChild = false, ...props }, ref) => {
     const baseClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
     
-    const variantClasses = {
-      default: "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500",
-      destructive: "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500",
-      outline: "border border-gray-300 bg-white hover:bg-gray-50 focus-visible:ring-blue-500",
-      secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500",
-      ghost: "hover:bg-gray-100 focus-visible:ring-gray-500",
-      link: "text-blue-600 underline-offset-4 hover:underline focus-visible:ring-blue-500",
+    const variantStyles = {
+      default: { backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' },
+      destructive: { backgroundColor: 'var(--destructive)', color: 'var(--destructive-foreground)' },
+      outline: { border: '1px solid var(--border)', backgroundColor: 'var(--background)', color: 'var(--foreground)' },
+      secondary: { backgroundColor: 'var(--secondary)', color: 'var(--secondary-foreground)' },
+      ghost: { backgroundColor: 'transparent', color: 'var(--foreground)' },
+      link: { backgroundColor: 'transparent', color: 'var(--primary)', textDecoration: 'underline' },
     };
     
     const sizeClasses = {
@@ -30,7 +30,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     const classes = cn(
       baseClasses,
-      variantClasses[variant],
       sizeClasses[size],
       className
     );
@@ -38,6 +37,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (asChild) {
       return React.cloneElement(props.children as React.ReactElement, {
         className: classes,
+        style: variantStyles[variant],
         ref,
         ...props
       });
@@ -46,6 +46,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={classes}
+        style={variantStyles[variant]}
         ref={ref}
         {...props}
       />
