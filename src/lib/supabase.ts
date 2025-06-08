@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Your Supabase project credentials
-const supabaseUrl = 'https://hhvbejmurxkdejmvxdgw.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhodmJlam11cnhrZGVqbXZ4ZGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzMjM3NjMsImV4cCI6MjA2NDg5OTc2M30.OgOaJPMpGZIbYjcbGGqNhhwPNHZLbtsg5KR9JdvGCp4';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://hhvbejmurxkdejmvxdgw.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhodmJlam11cnhrZGVqbXZ4ZGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzMjM3NjMsImV4cCI6MjA2NDg5OTc2M30.OgOaJPMpGZIbYjcbGGqNhhwPNHZLbtsg5KR9JdvGCp4';
 
 // Check if we have valid Supabase configuration
 const isSupabaseConfigured = supabaseUrl !== 'https://placeholder.supabase.co' && 
