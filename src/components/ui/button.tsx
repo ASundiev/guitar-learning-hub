@@ -10,13 +10,14 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", asChild = false, ...props }, ref) => {
-    const baseClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 hover:opacity-90 hover:scale-105";
+    const baseClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 hover:transform hover:-translate-y-0.5";
     
     const variantStyles = {
       default: { 
-        backgroundColor: 'var(--primary)', 
-        color: 'var(--primary-foreground)',
-        border: '1px solid var(--primary)'
+        background: 'linear-gradient(135deg, #ff6b35 0%, #e53e3e 100%)', 
+        color: '#ffffff',
+        border: 'none',
+        boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)'
       },
       destructive: { 
         backgroundColor: 'var(--destructive)', 
@@ -25,13 +26,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       },
       outline: { 
         border: '1px solid var(--border)', 
-        backgroundColor: 'var(--background)', 
+        backgroundColor: 'var(--card)', 
         color: 'var(--foreground)' 
       },
       secondary: { 
         backgroundColor: 'var(--secondary)', 
         color: 'var(--secondary-foreground)',
-        border: '1px solid var(--secondary)'
+        border: '1px solid var(--border)'
       },
       ghost: { 
         backgroundColor: 'transparent', 

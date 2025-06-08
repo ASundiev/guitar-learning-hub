@@ -2,25 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark theme variables */
+/* Tidal-inspired dark theme variables */
 :root {
-  --background: #0a0a0b;
+  --background: #0d0d0f;
+  --background-secondary: #161618;
+  --background-tertiary: #1a1a1d;
   --foreground: #fafafa;
-  --card: #111113;
+  --foreground-secondary: #e4e4e7;
+  --foreground-muted: #a1a1aa;
+  --card: #161618;
+  --card-hover: #1a1a1d;
   --card-foreground: #fafafa;
-  --primary: #8b5cf6;
+  --primary: #ff6b35;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1c;
+  --primary-hover: #ff5722;
+  --secondary: #1f1f23;
   --secondary-foreground: #a1a1aa;
-  --muted: #151516;
+  --muted: #18181b;
   --muted-foreground: #71717a;
-  --accent: #1e1e20;
+  --accent: #27272a;
   --accent-foreground: #fafafa;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #27272a;
+  --border-subtle: #18181b;
   --input: #1a1a1c;
-  --ring: #8b5cf6;
+  --ring: #ff6b35;
+  --tidal-gradient: linear-gradient(135deg, #ff6b35 0%, #ff5722 50%, #e53e3e 100%);
+  --tidal-text-gradient: linear-gradient(135deg, #fafafa 0%, #e4e4e7 100%);
 }
 
 @layer base {
@@ -32,6 +41,9 @@
     background-color: var(--background);
     color: var(--foreground);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   input::placeholder,
@@ -40,21 +52,71 @@
   }
 }
 
-/* Custom utilities */
+/* Tidal-inspired utilities */
 @layer utilities {
-  .gradient-purple {
-    background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  .tidal-gradient {
+    background: var(--tidal-gradient);
   }
   
-  /* Ensure buttons are always visible */
-  button[style*="var(--primary)"] {
-    background-color: #8b5cf6 !important;
-    color: #ffffff !important;
-    border-color: #8b5cf6 !important;
+  .tidal-text-gradient {
+    background: var(--tidal-text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
-  /* Ensure text elements use proper colors */
-  .text-muted-foreground {
-    color: var(--muted-foreground) !important;
+  .tidal-card {
+    background: var(--card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .tidal-card:hover {
+    background: var(--card-hover);
+    border-color: var(--border);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+  
+  .tidal-button {
+    background: var(--tidal-gradient);
+    color: var(--primary-foreground);
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .tidal-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  }
+  
+  .tidal-secondary-button {
+    background: var(--secondary);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .tidal-secondary-button:hover {
+    background: var(--accent);
+    border-color: var(--primary);
+  }
+  
+  .tidal-glass {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(22, 22, 24, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, var(--foreground) 0%, var(--foreground-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 } 

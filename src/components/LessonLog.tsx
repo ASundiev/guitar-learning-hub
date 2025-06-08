@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Badge } from './ui/badge';
 import { Calendar, Plus, Edit2, Trash2, Loader2, MoreHorizontal } from 'lucide-react';
 import { lessonService, type Lesson } from '../lib/supabase';
 
@@ -179,24 +177,16 @@ export function LessonLog() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[24px] font-bold" style={{ color: 'var(--foreground)' }}>Lesson History</h2>
+          <h2 className="text-3xl font-bold text-gradient">Lesson History</h2>
+          <p className="text-zinc-400 mt-1">Track your guitar learning progress</p>
         </div>
-        <Button 
+        <button 
           onClick={() => setIsAddingLesson(true)}
-          style={{ 
-            backgroundColor: '#8b5cf6', 
-            color: '#ffffff', 
-            border: '1px solid #8b5cf6',
-            padding: '8px 16px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
+          className="tidal-button px-6 py-3 flex items-center gap-2 font-medium"
         >
           <Plus className="h-4 w-4" />
           Add Lesson
-        </Button>
+        </button>
         
         {/* Dialog for adding lesson */}
         {isAddingLesson && (
@@ -215,56 +205,56 @@ export function LessonLog() {
       </div>
 
       {/* Lessons */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {lessons.map((lesson, index) => (
-          <Card key={lesson.id} className="group hover:border-primary/30 transition-colors">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="space-y-1 flex-1">
-                  <CardTitle className="text-lg">
-                    {new Date(lesson.date).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </CardTitle>
-                  <CardDescription>
+          <div key={lesson.id} className="tidal-card p-6 group">
+            <div className="flex items-start justify-between mb-4">
+              <div className="space-y-2 flex-1">
+                <h3 className="text-xl font-semibold text-white">
+                  {new Date(lesson.date).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </h3>
+                <div className="flex items-center gap-3">
+                  <span className="text-zinc-400 text-sm">
                     {lesson.remaining_lessons} lessons remaining
-                  </CardDescription>
-                </div>
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem onClick={() => handleEdit(lesson)}>
-                        <Edit2 className="h-4 w-4 mr-2" />
-                        Edit Lesson
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleDelete(lesson.id)}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete Lesson
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  </span>
+                  {index === 0 && (
+                    <span className="px-2 py-1 text-xs bg-gradient-to-r from-[#ff6b35] to-[#e53e3e] text-white rounded-full font-medium">
+                      Latest
+                    </span>
+                  )}
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="leading-relaxed">{lesson.notes}</p>
-              {index === 0 && (
-                <Badge variant="secondary" className="mt-4">
-                  Latest
-                </Badge>
-              )}
-            </CardContent>
+              <div className="opacity-0 group-hover:opacity-100 transition-all duration-200">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                      <MoreHorizontal className="h-4 w-4 text-zinc-400" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40 bg-zinc-900 border-zinc-800">
+                    <DropdownMenuItem onClick={() => handleEdit(lesson)} className="text-zinc-300 hover:bg-zinc-800">
+                      <Edit2 className="h-4 w-4 mr-2" />
+                      Edit Lesson
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleDelete(lesson.id)}
+                      className="text-red-400 hover:bg-red-900/20 focus:text-red-400"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Lesson
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+            <div className="mt-4">
+              <p className="text-zinc-300 leading-relaxed">{lesson.notes}</p>
+            </div>
 
             {/* Edit Dialog */}
             <Dialog open={editingLesson?.id === lesson.id} onOpenChange={(open) => {
@@ -280,22 +270,28 @@ export function LessonLog() {
                 {renderLessonForm()}
               </DialogContent>
             </Dialog>
-          </Card>
+          </div>
         ))}
         
         {lessons.length === 0 && (
-          <Card className="border-dashed">
-            <CardContent className="p-12 text-center">
-              <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="mb-2">No lessons yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Start tracking your guitar lessons to monitor progress.
-              </p>
-              <Button onClick={() => setIsAddingLesson(true)}>
-                Add Your First Lesson
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="text-center py-16">
+            <div className="relative inline-block mb-6">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#ff6b35] to-[#e53e3e] opacity-20 blur-xl"></div>
+              <div className="relative p-6 rounded-full bg-zinc-900/50 border border-zinc-800">
+                <Calendar className="h-12 w-12 text-zinc-400" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-semibold text-white mb-3">No lessons yet</h3>
+            <p className="text-zinc-400 mb-8 text-lg">
+              Start tracking your guitar lessons to monitor progress.
+            </p>
+            <button 
+              onClick={() => setIsAddingLesson(true)}
+              className="tidal-button px-8 py-4 text-lg"
+            >
+              Add Your First Lesson
+            </button>
+          </div>
         )}
       </div>
     </div>

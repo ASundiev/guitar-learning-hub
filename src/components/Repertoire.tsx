@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { useState, useEffect, useCallback } from 'react';
+import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { Tabs, TabsContent, TabsTrigger } from './ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Badge } from './ui/badge';
-import { Music, Plus, Edit2, Trash2, ExternalLink, Link, Video, Mic, Play, Heart, Star, BookOpen, Loader2, MoreHorizontal, Image, ChevronDown, ChevronUp } from 'lucide-react';
+import { Music, Plus, Edit2, Trash2, ExternalLink, Link, Video, Mic, Play, Heart, Star, BookOpen, Loader2, MoreHorizontal, Image, ChevronUp } from 'lucide-react';
 import { songService, type Song } from '../lib/supabase';
 import { musicService } from '../lib/musicService';
 import { ImageWithFallback } from './figma/ImageWithFallback';
@@ -377,11 +376,11 @@ export function Repertoire() {
     console.log('SongCard render:', song.name, 'isVideoExpanded:', isVideoExpanded, 'expandedVideoId:', expandedVideoId);
     
     return (
-      <div className="group rounded-lg border border-transparent hover:border-border/50 overflow-hidden transition-all duration-300 ease-out">
+      <div className="tidal-card p-4 group overflow-hidden">
         {/* Main song info row */}
-        <div className="flex items-center gap-3 p-3 hover:bg-muted/30 transition-colors duration-200">
+        <div className="flex items-center gap-4">
           {/* Album Artwork */}
-          <div className="w-12 h-12 flex-shrink-0 bg-muted rounded overflow-hidden transition-transform duration-200 hover:scale-105">
+          <div className="w-16 h-16 flex-shrink-0 bg-zinc-800 rounded-lg overflow-hidden transition-transform duration-200 hover:scale-105">
             {artworkUrl ? (
               <ImageWithFallback
                 src={artworkUrl}
@@ -390,49 +389,56 @@ export function Repertoire() {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <Music className="h-5 w-5 text-muted-foreground" />
+                <Music className="h-6 w-6 text-zinc-500" />
               </div>
             )}
           </div>
           
           {/* Song Info */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <h4 className="truncate text-sm font-medium text-foreground leading-none">{song.name}</h4>
-              <span className="text-xs text-muted-foreground">•</span>
-              <p className="truncate text-xs text-muted-foreground">{song.author}</p>
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="truncate text-lg font-semibold text-white leading-none">{song.name}</h4>
             </div>
-            <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{song.comments}</p>
+            <p className="truncate text-sm text-zinc-400 mb-2">{song.author}</p>
+            {song.comments && (
+              <p className="text-xs text-zinc-500 line-clamp-2">{song.comments}</p>
+            )}
           </div>
           
           {/* Action Links */}
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 opacity-60 hover:opacity-100 transition-all duration-200 hover:scale-110" asChild>
-              <a href={song.tabs_link} target="_blank" rel="noopener noreferrer" title="Tabs">
-                <Link className="h-3.5 w-3.5" />
-              </a>
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`h-7 w-7 p-0 transition-all duration-300 hover:scale-110 ${
+          <div className="flex items-center gap-2">
+            <a 
+              href={song.tabs_link} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="p-2 rounded-lg hover:bg-zinc-800/50 transition-colors opacity-60 hover:opacity-100"
+              title="Tabs"
+            >
+              <Link className="h-4 w-4 text-zinc-400" />
+            </a>
+            <button
+              className={`p-2 rounded-lg transition-all duration-300 ${
                 isVideoExpanded 
-                  ? 'opacity-100 bg-primary/20 text-primary shadow-lg border border-primary/30' 
-                  : 'opacity-60 hover:opacity-100'
+                  ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' 
+                  : 'hover:bg-zinc-800/50 opacity-60 hover:opacity-100'
               }`}
               onClick={() => toggleVideo(song.id)}
               title={isVideoExpanded ? "Hide Video" : "Show Video"}
             >
-              <div className={`transition-all duration-300 ease-out ${isVideoExpanded ? 'rotate-180 scale-110' : 'rotate-0 scale-100'}`}>
-                {isVideoExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <Video className="h-3.5 w-3.5" />}
+              <div className={`transition-all duration-300 ease-out ${isVideoExpanded ? 'rotate-180' : 'rotate-0'}`}>
+                {isVideoExpanded ? <ChevronUp className="h-4 w-4 text-zinc-400" /> : <Video className="h-4 w-4 text-zinc-400" />}
               </div>
-            </Button>
+            </button>
             {song.recording_link && (
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 opacity-60 hover:opacity-100 transition-all duration-200 hover:scale-110" asChild>
-                <a href={song.recording_link} target="_blank" rel="noopener noreferrer" title="Recording">
-                  <Mic className="h-3.5 w-3.5" />
-                </a>
-              </Button>
+              <a 
+                href={song.recording_link} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg hover:bg-zinc-800/50 transition-colors opacity-60 hover:opacity-100"
+                title="Recording"
+              >
+                <Mic className="h-4 w-4 text-zinc-400" />
+              </a>
             )}
           </div>
           
@@ -440,11 +446,11 @@ export function Repertoire() {
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:scale-110 transition-transform duration-200">
-                  <MoreHorizontal className="h-3.5 w-3.5" />
-                </Button>
+                <button className="p-2 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                  <MoreHorizontal className="h-4 w-4 text-zinc-400" />
+                </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-zinc-900 border-zinc-800">
                 <DropdownMenuItem onClick={() => handleEdit(song)}>
                   <Edit2 className="h-4 w-4 mr-2" />
                   Edit Song
@@ -623,24 +629,16 @@ export function Repertoire() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[24px] font-bold" style={{ color: 'var(--foreground)' }}>Song Collection</h2>
+          <h2 className="text-3xl font-bold text-gradient">Song Collection</h2>
+          <p className="text-zinc-400 mt-1">Organize your musical journey</p>
         </div>
-        <Button 
+        <button 
           onClick={() => setIsAddingSong(true)}
-          style={{ 
-            backgroundColor: '#8b5cf6', 
-            color: '#ffffff', 
-            border: '1px solid #8b5cf6',
-            padding: '8px 16px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
+          className="tidal-button px-6 py-3 flex items-center gap-2 font-medium"
         >
           <Plus className="h-4 w-4" />
-              Add Song
-            </Button>
+          Add Song
+        </button>
         
         {/* Dialog for adding song */}
         {isAddingSong && (
@@ -660,7 +658,7 @@ export function Repertoire() {
 
       {/* Tabs */}
       <Tabs defaultValue="rehearsing" onValueChange={(value) => setActiveCategory(value as any)}>
-        <TabsList className="bg-card border border-border p-1 rounded-lg">
+        <div className="flex gap-2 p-1 rounded-2xl bg-zinc-900/50 backdrop-blur-xl border border-zinc-800">
           {(['rehearsing', 'want-to-learn', 'studied', 'recorded'] as const).map((category) => {
             const Icon = categoryIcons[category];
             const count = getSongsByCategory(category).length;
@@ -668,14 +666,14 @@ export function Repertoire() {
               <TabsTrigger
                 key={category}
                 value={category}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md px-4 py-2 transition-all duration-200 hover:scale-105"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#ff6b35] data-[state=active]:to-[#e53e3e] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-orange-500/20 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-zinc-800/50 text-zinc-400 hover:text-white font-medium"
               >
                 <Icon className="h-4 w-4 mr-2" />
                 {categoryTitles[category]} ({count})
               </TabsTrigger>
             );
           })}
-        </TabsList>
+        </div>
 
         {(['rehearsing', 'want-to-learn', 'studied', 'recorded'] as const).map(category => (
           <TabsContent key={category} value={category} className="space-y-2 mt-6">
@@ -686,18 +684,24 @@ export function Repertoire() {
             </div>
             
             {getSongsByCategory(category).length === 0 && (
-              <Card className="border-dashed">
-                <CardContent className="p-12 text-center">
-                  {React.createElement(categoryIcons[category], { className: "h-12 w-12 mx-auto mb-4 text-muted-foreground" })}
-                  <h3 className="mb-2">No songs yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Add your first {categoryTitles[category].toLowerCase()} song.
-                  </p>
-                  <Button onClick={() => setIsAddingSong(true)} className="transition-transform duration-200 hover:scale-105">
-                    Add Song
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="text-center py-16">
+                <div className="relative inline-block mb-6">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#ff6b35] to-[#e53e3e] opacity-20 blur-xl"></div>
+                  <div className="relative p-6 rounded-full bg-zinc-900/50 border border-zinc-800">
+                    {React.createElement(categoryIcons[category], { className: "h-12 w-12 text-zinc-400" })}
+                  </div>
+                </div>
+                <h3 className="text-2xl font-semibold text-white mb-3">No songs yet</h3>
+                <p className="text-zinc-400 mb-8 text-lg">
+                  Add your first {categoryTitles[category].toLowerCase()} song.
+                </p>
+                <button 
+                  onClick={() => setIsAddingSong(true)}
+                  className="tidal-button px-8 py-4 text-lg"
+                >
+                  Add Song
+                </button>
+              </div>
             )}
           </TabsContent>
         ))}
