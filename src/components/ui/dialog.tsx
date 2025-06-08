@@ -34,7 +34,7 @@ const Dialog: React.FC<DialogProps> = ({ open, onOpenChange, children }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div 
-        className="fixed inset-0 bg-black/50" 
+        className="fixed inset-0 bg-black/50 z-40" 
         onClick={() => onOpenChange?.(false)}
       />
       <div className="relative z-50 max-h-[90vh] w-full max-w-lg overflow-auto">
@@ -108,7 +108,8 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-gray-600", className)}
+    className={cn("text-sm", className)}
+    style={{ color: 'var(--muted-foreground)' }}
     {...props}
   />
 ));

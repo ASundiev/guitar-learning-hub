@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -100,7 +100,19 @@ export function LessonLog() {
     setEditingLesson(null);
   };
 
-  const LessonForm = () => (
+  const handleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, date: e.target.value }));
+  }, []);
+
+  const handleRemainingLessonsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, remainingLessons: e.target.value }));
+  }, []);
+
+  const handleNotesChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, notes: e.target.value }));
+  }, []);
+
+  const renderLessonForm = useCallback(() => (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -109,7 +121,7 @@ export function LessonLog() {
             id="date"
             type="date"
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onChange={handleDateChange}
             required
           />
         </div>
@@ -121,7 +133,7 @@ export function LessonLog() {
             type="number"
             min="0"
             value={formData.remainingLessons}
-            onChange={(e) => setFormData({ ...formData, remainingLessons: e.target.value })}
+            onChange={handleRemainingLessonsChange}
             required
           />
         </div>
@@ -132,7 +144,7 @@ export function LessonLog() {
         <Textarea
           id="notes"
           value={formData.notes}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          onChange={handleNotesChange}
           placeholder="What did you work on? Techniques, songs, goals..."
           rows={6}
           className="resize-none"
@@ -150,7 +162,7 @@ export function LessonLog() {
         </Button>
       </div>
     </form>
-  );
+  ), [formData, handleSubmit, saving, editingLesson, resetForm, handleDateChange, handleRemainingLessonsChange, handleNotesChange]);
 
   if (loading) {
     return (
@@ -167,25 +179,39 @@ export function LessonLog() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[24px]">Lesson History</h2>
+          <h2 className="text-[24px] font-bold" style={{ color: 'var(--foreground)' }}>Lesson History</h2>
         </div>
-        <Dialog open={isAddingLesson} onOpenChange={setIsAddingLesson}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Lesson
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Add New Lesson</DialogTitle>
-              <DialogDescription>
-                Record details about your latest guitar lesson.
-              </DialogDescription>
-            </DialogHeader>
-            <LessonForm />
-          </DialogContent>
-        </Dialog>
+        <Button 
+          onClick={() => setIsAddingLesson(true)}
+          style={{ 
+            backgroundColor: '#8b5cf6', 
+            color: '#ffffff', 
+            border: '1px solid #8b5cf6',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <Plus className="h-4 w-4" />
+          Add Lesson
+        </Button>
+        
+        {/* Dialog for adding lesson */}
+        {isAddingLesson && (
+          <Dialog open={isAddingLesson} onOpenChange={setIsAddingLesson}>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Add New Lesson</DialogTitle>
+                <DialogDescription>
+                  Record details about your latest guitar lesson.
+                </DialogDescription>
+              </DialogHeader>
+              {renderLessonForm()}
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {/* Lessons */}
@@ -251,7 +277,7 @@ export function LessonLog() {
                     Update the details of this lesson.
                   </DialogDescription>
                 </DialogHeader>
-                <LessonForm />
+                {renderLessonForm()}
               </DialogContent>
             </Dialog>
           </Card>

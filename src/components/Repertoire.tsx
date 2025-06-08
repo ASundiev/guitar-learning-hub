@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -259,7 +259,31 @@ export function Repertoire() {
     }
   };
 
-  const SongForm = () => (
+  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, name: e.target.value }));
+  }, []);
+
+  const handleAuthorChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, author: e.target.value }));
+  }, []);
+
+  const handleTabsLinkChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, tabsLink: e.target.value }));
+  }, []);
+
+  const handleVideoLinkChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, videoLink: e.target.value }));
+  }, []);
+
+  const handleRecordingLinkChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, recordingLink: e.target.value }));
+  }, []);
+
+  const handleCommentsChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, comments: e.target.value }));
+  }, []);
+
+  const renderSongForm = useCallback(() => (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -267,7 +291,7 @@ export function Repertoire() {
           <Input
             id="name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={handleNameChange}
             required
           />
         </div>
@@ -277,7 +301,7 @@ export function Repertoire() {
           <Input
             id="author"
             value={formData.author}
-            onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+            onChange={handleAuthorChange}
             required
           />
         </div>
@@ -290,7 +314,7 @@ export function Repertoire() {
             id="tabs"
             type="url"
             value={formData.tabsLink}
-            onChange={(e) => setFormData({ ...formData, tabsLink: e.target.value })}
+            onChange={handleTabsLinkChange}
             placeholder="https://tabs.ultimate-guitar.com/..."
             required
           />
@@ -302,7 +326,7 @@ export function Repertoire() {
             id="video"
             type="url"
             value={formData.videoLink}
-            onChange={(e) => setFormData({ ...formData, videoLink: e.target.value })}
+            onChange={handleVideoLinkChange}
             placeholder="https://youtube.com/..."
             required
           />
@@ -315,7 +339,7 @@ export function Repertoire() {
           id="recording"
           type="url"
           value={formData.recordingLink}
-          onChange={(e) => setFormData({ ...formData, recordingLink: e.target.value })}
+          onChange={handleRecordingLinkChange}
           placeholder="https://soundcloud.com/..."
         />
       </div>
@@ -325,7 +349,7 @@ export function Repertoire() {
         <Textarea
           id="comments"
           value={formData.comments}
-          onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+          onChange={handleCommentsChange}
           placeholder="Techniques, difficulty, progress notes..."
           rows={4}
           className="resize-none"
@@ -343,7 +367,7 @@ export function Repertoire() {
         </Button>
       </div>
     </form>
-  );
+  ), [formData, handleSubmit, saving, editingSong, resetForm, handleNameChange, handleAuthorChange, handleTabsLinkChange, handleVideoLinkChange, handleRecordingLinkChange, handleCommentsChange]);
 
   const SongCard = ({ song }: { song: Song }) => {
     const artworkUrl = artworkCache.get(song.id) || song.artwork_url;
@@ -534,7 +558,7 @@ export function Repertoire() {
                 Update the details of this song.
               </DialogDescription>
             </DialogHeader>
-            <SongForm />
+            {renderSongForm()}
           </DialogContent>
         </Dialog>
       </div>
@@ -599,15 +623,28 @@ export function Repertoire() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[24px]">Song Collection</h2>
+          <h2 className="text-[24px] font-bold" style={{ color: 'var(--foreground)' }}>Song Collection</h2>
         </div>
-        <Dialog open={isAddingSong} onOpenChange={setIsAddingSong}>
-          <DialogTrigger asChild>
-            <Button className="transition-transform duration-200 hover:scale-105">
-              <Plus className="h-4 w-4 mr-2" />
+        <Button 
+          onClick={() => setIsAddingSong(true)}
+          style={{ 
+            backgroundColor: '#8b5cf6', 
+            color: '#ffffff', 
+            border: '1px solid #8b5cf6',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <Plus className="h-4 w-4" />
               Add Song
             </Button>
-          </DialogTrigger>
+        
+        {/* Dialog for adding song */}
+        {isAddingSong && (
+          <Dialog open={isAddingSong} onOpenChange={setIsAddingSong}>
           <DialogContent className="sm:max-w-[700px]">
             <DialogHeader>
               <DialogTitle>Add New Song</DialogTitle>
@@ -615,9 +652,10 @@ export function Repertoire() {
                 Add a new song to your repertoire.
               </DialogDescription>
             </DialogHeader>
-            <SongForm />
+              {renderSongForm()}
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Tabs */}
