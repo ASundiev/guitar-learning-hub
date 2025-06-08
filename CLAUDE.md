@@ -23,6 +23,7 @@ This is a React + TypeScript guitar learning app with Supabase backend that grac
 - **supabase.ts**: Database client with dual-mode operation (cloud/local)
 - **musicService.ts**: iTunes API integration for album artwork fetching
 - Mock data services automatically activate when Supabase is not configured
+- **Lesson-Song Relationship**: Many-to-many relationship between lessons and songs via `lesson_songs` junction table
 
 ### UI Framework
 Uses custom UI components in `src/components/ui/` built on Radix UI primitives with Tailwind CSS. All components use CSS custom properties for theming (dark mode by default).
@@ -37,11 +38,15 @@ The app automatically detects configuration status via `isSupabaseConfigured` ch
 
 ## Database Schema
 
-Two main tables:
+Three main tables:
 - **lessons**: date, remaining_lessons, notes
 - **songs**: name, author, tabs_link, video_link, comments, recording_link, artwork_url, category
+- **lesson_songs**: Junction table linking lessons to songs (many-to-many relationship)
 
-See `database/schema.sql` for complete schema definitions.
+Key views:
+- **lessons_with_songs**: View that joins lessons with their associated songs
+
+See `database/schema.sql` and `database/add-lesson-songs-migration.sql` for complete schema definitions.
 
 ## Deployment
 

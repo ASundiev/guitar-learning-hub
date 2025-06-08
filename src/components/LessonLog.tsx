@@ -5,8 +5,9 @@ import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Calendar, Plus, Edit2, Trash2, Loader2, MoreHorizontal } from 'lucide-react';
-import { lessonService, type Lesson } from '../lib/supabase';
+import { SongSelector } from './ui/song-selector';
+import { Calendar, Plus, Edit2, Trash2, Loader2, MoreHorizontal, Music } from 'lucide-react';
+import { lessonService, songService, type Lesson, type Song } from '../lib/supabase';
 
 interface LessonForm {
   date: string;
@@ -16,10 +17,12 @@ interface LessonForm {
 
 export function LessonLog() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isAddingLesson, setIsAddingLesson] = useState(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
+  const [selectedSongIds, setSelectedSongIds] = useState<string[]>([]);
   const [formData, setFormData] = useState<LessonForm>({
     date: '',
     remainingLessons: '',
@@ -27,16 +30,20 @@ export function LessonLog() {
   });
 
   useEffect(() => {
-    loadLessons();
+    loadData();
   }, []);
 
-  const loadLessons = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
-      const data = await lessonService.getAll();
-      setLessons(data);
+      const [lessonsData, songsData] = await Promise.all([
+        lessonService.getAll(),
+        songService.getAll()
+      ]);
+      setLessons(lessonsData);
+      setSongs(songsData);
     } catch (error) {
-      console.error('Error loading lessons:', error);
+      console.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -55,18 +62,19 @@ export function LessonLog() {
       };
 
       if (editingLesson) {
-        const updated = await lessonService.update(editingLesson.id, lessonData);
+        const updated = await lessonService.update(editingLesson.id, lessonData, selectedSongIds);
         setLessons(lessons.map(lesson => 
           lesson.id === editingLesson.id ? updated : lesson
         ));
         setEditingLesson(null);
       } else {
-        const newLesson = await lessonService.create(lessonData);
+        const newLesson = await lessonService.create(lessonData, selectedSongIds);
         setLessons([newLesson, ...lessons]);
         setIsAddingLesson(false);
       }
 
       setFormData({ date: '', remainingLessons: '', notes: '' });
+      setSelectedSongIds([]);
     } catch (error) {
       console.error('Error saving lesson:', error);
     } finally {
@@ -81,6 +89,7 @@ export function LessonLog() {
       remainingLessons: lesson.remaining_lessons.toString(),
       notes: lesson.notes
     });
+    setSelectedSongIds(lesson.songs?.map(song => song.id) || []);
   };
 
   const handleDelete = async (id: string) => {
@@ -94,6 +103,7 @@ export function LessonLog() {
 
   const resetForm = () => {
     setFormData({ date: '', remainingLessons: '', notes: '' });
+    setSelectedSongIds([]);
     setIsAddingLesson(false);
     setEditingLesson(null);
   };
@@ -137,6 +147,12 @@ export function LessonLog() {
         </div>
       </div>
       
+      <SongSelector
+        availableSongs={songs}
+        selectedSongIds={selectedSongIds}
+        onSelectionChange={setSelectedSongIds}
+      />
+      
       <div className="space-y-2">
         <Label htmlFor="notes">Notes</Label>
         <Textarea
@@ -160,7 +176,7 @@ export function LessonLog() {
         </Button>
       </div>
     </form>
-  ), [formData, handleSubmit, saving, editingLesson, resetForm, handleDateChange, handleRemainingLessonsChange, handleNotesChange]);
+  ), [formData, songs, selectedSongIds, saving, editingLesson, handleSubmit, resetForm, handleDateChange, handleRemainingLessonsChange, handleNotesChange]);
 
   if (loading) {
     return (
@@ -252,8 +268,39 @@ export function LessonLog() {
                 </DropdownMenu>
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 space-y-4">
               <p className="text-zinc-300 leading-relaxed">{lesson.notes}</p>
+              
+              {/* Songs practiced */}
+              {lesson.songs && lesson.songs.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Music className="h-4 w-4 text-orange-400" />
+                    <span className="text-sm font-medium text-zinc-300">
+                      Songs Practiced ({lesson.songs.length})
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {lesson.songs.map(song => (
+                      <div
+                        key={song.id}
+                        className="flex items-center gap-2 px-2.5 py-1 bg-zinc-800/50 border border-zinc-700 rounded-lg text-xs"
+                      >
+                        <span className="text-white font-medium">{song.name}</span>
+                        <span className="text-zinc-400">by {song.author}</span>
+                        <span className={`px-1.5 py-0.5 rounded-full text-xs ${
+                          song.category === 'rehearsing' ? 'bg-blue-500/20 text-blue-400' :
+                          song.category === 'want-to-learn' ? 'bg-purple-500/20 text-purple-400' :
+                          song.category === 'studied' ? 'bg-green-500/20 text-green-400' :
+                          'bg-yellow-500/20 text-yellow-400'
+                        }`}>
+                          {song.category.replace('-', ' ')}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Edit Dialog */}
